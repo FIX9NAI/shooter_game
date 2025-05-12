@@ -41,7 +41,7 @@ class Player(GameSprite):
         #global ammo
         #ammo = 70
         current_time = time.get_ticks()  # текущее время 
-        if current_time - self.last_shot > 100:  # задержка в 0.3 сек
+        if current_time - self.last_shot > 150:  # задержка в 0.3 сек
             bullet = Bullet('bullet.png', self.rect.centerx, self.rect.top, -5)
             bullets.add(bullet)
         #ammo = ammo - 1
@@ -56,11 +56,9 @@ class Enemy(GameSprite):
 
     def update(self):
         self.rect.y += self.speed
-        global lost
         if self.rect.y > 900:
             self.rect.y = 0
             self.rect.x = randint(80, 1120)
-            lost = lost + 1
 
 class Bullet(GameSprite):
     def __init__(self, player_image, player_x, player_y, player_speed):
@@ -68,15 +66,15 @@ class Bullet(GameSprite):
         self.image = transform.scale(image.load(player_image), (10, 20))
     def update(self):
         self.rect.y += self.speed
-        global win
+        global account
         if self.rect.y < 0:
             self.kill()
         if sprite.groupcollide(monsters, bullets, True, True):
-            win = win + 1
+            account = account + 1
             monster1 = Enemy('ufo.png', randint(80, 1120), 0, randint(1, 4))
             monsters.add(monster1)
         if sprite.groupcollide(asteroids, bullets, True, True):
-            win = win + 1
+            account = account + 1
             monster1 = Enemy('asteroid.png', randint(80, 1120), 0, randint(1, 4))
             asteroids.add(asteroid1)
 
@@ -139,14 +137,12 @@ run = True
 finish = False
 clock = time.Clock()
 FPS = 60
-lost = 0
-win = 0
+account = 0
 font.init()
 font1 = font.SysFont('Arial', 36)
 font2 = font.SysFont('Arial', 36)
 font3 = font.SysFont('Arial', 128)
 lose = font3.render('YOU LOSE', True,(255,0,0))
-winner = font3.render('YOU WIN', True,(124,252,0))
 
 while run:
     for e in event.get():
@@ -159,15 +155,11 @@ while run:
 
     if finish != True:
 
-        text_lose = font1.render("Пропущено:" + str(lost), 1, (255, 255, 255))
-        text_win = font2.render("Поверженно:" + str(win), 1, (255, 255, 255))
-        #text_ammo = font2.render("Патроны:" + str(ammo), 1, (255, 255, 255))
+        text_account = font2.render("Поверженно:" + str(account), 1, (255, 255, 255))
 
         clock.tick(FPS)
         window.blit(background,(0, 0))
-        window.blit(text_lose, (10, 40))
-        window.blit(text_win, (10, 10))
-        #window.blit(text_ammo, (10, 200))
+        window.blit(text_account, (10, 10))
 
         player.reset()
 
@@ -181,13 +173,9 @@ while run:
         bullets.update()
         asteroids.update()
         
-        if lost >= 10 or sprite.spritecollide(player, monsters, False) or sprite.spritecollide(player, asteroids, False):
+        if sprite.spritecollide(player, monsters, False) or sprite.spritecollide(player, asteroids, False):
             finish = True
             window.blit(lose, (400, 400))
-            display.update()
-        elif win >= 20:
-            finish = True
-            window.blit(winner, (400, 400))
             display.update()
 
 display.update()
