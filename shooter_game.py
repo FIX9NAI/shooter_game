@@ -30,6 +30,10 @@ class Player(GameSprite):
             self.rect.x -= self.speed
         if keys[K_RIGHT] and self.rect.x < 1190 - self.rect.width:
             self.rect.x += self.speed
+        if keys[K_UP] and self.rect.y > 0:
+            self.rect.y -= self.speed
+        if keys[K_DOWN] and self.rect.y < 890 - self.rect.height:
+            self.rect.y += self.speed
         if keys[K_SPACE]:
             player.fire()
     
@@ -37,7 +41,7 @@ class Player(GameSprite):
         #global ammo
         #ammo = 70
         current_time = time.get_ticks()  # текущее время 
-        if current_time - self.last_shot > 300:  # задержка в 0.3 сек
+        if current_time - self.last_shot > 100:  # задержка в 0.3 сек
             bullet = Bullet('bullet.png', self.rect.centerx, self.rect.top, -5)
             bullets.add(bullet)
         #ammo = ammo - 1
@@ -143,10 +147,6 @@ font2 = font.SysFont('Arial', 36)
 font3 = font.SysFont('Arial', 128)
 lose = font3.render('YOU LOSE', True,(255,0,0))
 winner = font3.render('YOU WIN', True,(124,252,0))
-#ammunition = font2.render('Патроны', True,(255, 255, 255))
-
-#global ammo
-#ammo = 70
 
 while run:
     for e in event.get():
